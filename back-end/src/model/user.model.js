@@ -20,10 +20,12 @@ const userSchema= mongoose.Schema({
        default:"user" 
     },
     mainTask:{
-        type:[{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"task"
-        }]
+        type:[
+            {
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"task"
+            }
+        ]
     },
     soloTask:{
         type:[
