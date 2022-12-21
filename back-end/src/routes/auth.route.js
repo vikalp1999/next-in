@@ -9,7 +9,7 @@ router.post('/signup', async (req, res)=>{
     res.status(200).send(data)    
 })
 
-router.post('/login', async (res, req)=>{
+router.post('/login', async (req, res)=>{
     let {email, password} = req.body
     let data = await AuthLogin(email, password)
     res.status(200).send(data)

@@ -26,7 +26,7 @@ const AuthSignup = async (email, password, name) => {
 
 const AuthLogin = async (email, password)=>{
     try {
-        const user = await UserModel.findOne({email, password})
+        const user = await UserModel.findOne({email, password}).populate(["mainTask","soloTask"])
         if(!user){
             return {
                 error:true,

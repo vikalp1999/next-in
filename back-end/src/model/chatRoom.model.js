@@ -7,13 +7,17 @@ const chatRoomSchema= mongoose.Schema({
     ref:"user",
     required:true
    },
+   name:{
+    type:String,
+    required:true
+   },
    members:{
     type:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"user"
     }]
    },
-   alltask:{
+   alltasks:{
     type:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"task" 
