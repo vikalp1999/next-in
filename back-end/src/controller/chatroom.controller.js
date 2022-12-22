@@ -2,7 +2,7 @@ const ChatRoomModel = require('../model/chatRoom.model')
 
 const NewChatroom = async (lead, name) => {
     try {
-        let chatroom = new ChatRoomModel({roomLead:lead, name})
+        let chatroom = new ChatRoomModel({roomLead:lead, name}).populate("roomLead")
         await chatroom.save()
         return {
             error:false,
@@ -29,11 +29,15 @@ const JoinChatroom = async (user, id) => {
                 }
             }
             arr.push(user)
-            const update = await ChatRoomModel.findOneAndUpdate({_id:id}, {members:arr})
-            const chatroom1 = await ChatRoomModel.findOne({_id:id}).populate(["roomLead","members","alltasks"])
+            const update = await ChatRoomModel.findByIdAndUpdate(
+                id,
+                { $set: { members:arr } },
+                { new: true }
+            ).populate(["members", "roomLead", "alltasks", {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, ])
+            
             return {
                 error:false,
-                chatroom1
+                chatroom:update
             }
         } else {
             return {
