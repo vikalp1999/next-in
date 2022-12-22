@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-body,
 input {
   font-family: "Poppins", sans-serif;
 }
@@ -101,6 +100,14 @@ form.sign-in-form {
   color: #aaa;
   font-weight: 500;
 }
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  /* background-color: #f1f6ff; */
+}
+
 
 .social-text {
   padding: 0.7rem 0;
