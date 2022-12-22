@@ -2,8 +2,8 @@ const ChatRoomModel = require('../model/chatRoom.model')
 
 const NewChatroom = async (lead, name) => {
     try {
-        let chatroom = new ChatRoomModel({roomLead:lead, name}).populate("roomLead")
-        await chatroom.save()
+        let chatroom = await ChatRoomModel.create({roomLead:lead, name})
+        chatroom = await ChatRoomModel.findById(chatroom._id).populate("roomLead")
         return {
             error:false,
             chatroom,
