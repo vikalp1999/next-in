@@ -15,7 +15,8 @@ export const authReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 isRegistered: true,
                 isError: false,
-                isAuth: false
+                isAuth: false,
+                userData: payload
             };
         }
         case AUTH_LOGIN_SUCCESS: {

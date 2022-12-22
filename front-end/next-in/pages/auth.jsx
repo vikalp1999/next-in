@@ -5,10 +5,33 @@ import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser, registerUser } from '../redux/auth/auth.action';
 import { useRouter } from 'next/router';
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure,
+    Button,
+    Tabs,
+    TabList,
+    Tab,
+    TabPanels,
+    TabPanel,
+    FormControl,
+    FormLabel,
+    Input,
+} from '@chakra-ui/react'
+import axios from 'axios';
 
+let API = process.env.NEXT_PUBLIC_API_LINK;
 export default function Auth() {
     const router = useRouter()
     const [regi, setRegi] = useState("");
+    const [room, setRoom] = useState("");
+    const [code, setCode] = useState("");
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -16,7 +39,9 @@ export default function Auth() {
     })
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData, isError } = useSelector(store => store.auth);
-    console.log(userData, isAuth, isError)
+    console.log(userData, isAuth, isError, isRegistered)
+    // modal
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -28,30 +53,102 @@ export default function Auth() {
         )
     }
 
-    if (isRegistered) {
-        setRegi("")
-    }
+    // if (isRegistered) {
+    //     onOpen()
+    //     // setRegi("")
+    // }
 
     if (isAuth) {
         router.push("/dashboard")
     }
 
 
+
     const handleSignup = (event) => {
         event.preventDefault();
         dispatch(registerUser(form));
-    }
-
-    const handleLogin = (event) => {
-        event.preventDefault();
-        dispatch(loginUser(form)).then()
+        onOpen()
         if (isError) {
             alert("SomeThing Wrong")
         }
     }
 
+    const handleLogin = (event) => {
+        event.preventDefault();
+        dispatch(loginUser(form))
+        if (isError) {
+            alert("SomeThing Wrong")
+        }
+    }
+
+    const handleCreate = async () => {
+        console.log(room, userData.user._id)
+        let res = await axios.post(`${API}/chatroom/new`, {
+            lead: userData.user._id,
+            name: room
+        })
+        let data = await res.data;
+        console.log(data)
+        alert("Create Successfull")
+        onClose()
+        setRegi("")
+    }
+
+    const handleJoin = async () => {
+        console.log(code, userData.user._id)
+        let res = await axios.post(`${API}/chatroom/join/${code}`, {
+            user: userData.user._id
+        })
+        let data = await res.data;
+        console.log(data)
+        alert("join Successfull")
+        onClose()
+        setRegi("")
+    }
+
     return (
         <>
+
+            {/* Modal */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Select</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Tabs variant='enclosed'>
+                            <TabList>
+                                <Tab>Create Chart Room</Tab>
+                                <Tab>Join Chart Room</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel>
+                                    <FormControl>
+                                        <FormLabel>Chart Room Name</FormLabel>
+                                        <Input onChange={(e) => { setRoom(e.target.value) }} placeholder='Chart Room Name' />
+                                    </FormControl>
+
+                                    <Button onClick={handleCreate} colorScheme='blue' mt={3}>
+                                        Create Chart Room
+                                    </Button>
+                                </TabPanel>
+                                <TabPanel>
+                                    <FormControl>
+                                        <FormLabel>Join Room Name</FormLabel>
+                                        <Input onChange={(e) => { setCode(e.target.value) }} placeholder='Chart Room Code' />
+                                    </FormControl>
+
+                                    <Button onClick={handleJoin} colorScheme='blue' mt={3}>
+                                        Join Chart Room
+                                    </Button>
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
+            {/* Auth */}
             <div className={`container ${regi}`}>
                 <div className="forms-container">
                     <div className="signin-signup">
