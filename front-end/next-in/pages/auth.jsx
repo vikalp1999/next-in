@@ -4,8 +4,10 @@ import { BsGoogle, BsLinkedin, BsTwitter } from 'react-icons/bs';
 import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser, registerUser } from '../redux/auth/auth.action';
+import { useRouter } from 'next/router';
 
 export default function Auth() {
+    const router = useRouter()
     const [regi, setRegi] = useState("");
     const [form, setForm] = useState({
         name: "",
@@ -13,8 +15,8 @@ export default function Auth() {
         password: ""
     })
     const dispatch = useDispatch()
-    const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
-    console.log(userData)
+    const { isRegistered, isAuth, userData, isError } = useSelector(store => store.auth);
+    console.log(userData, isAuth, isError)
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -26,16 +28,26 @@ export default function Auth() {
         )
     }
 
+    if (isRegistered) {
+        setRegi("")
+    }
+
+    if (isAuth) {
+        router.push("/dashboard")
+    }
+
+
     const handleSignup = (event) => {
         event.preventDefault();
-        dispatch(registerUser(form)).then(() => {
-            setRegi("")
-        })
+        dispatch(registerUser(form));
     }
 
     const handleLogin = (event) => {
         event.preventDefault();
-        dispatch(loginUser(form))
+        dispatch(loginUser(form)).then()
+        if (isError) {
+            alert("SomeThing Wrong")
+        }
     }
 
     return (
