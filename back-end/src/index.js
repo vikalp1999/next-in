@@ -60,6 +60,7 @@ io.on('connection', (socket)=>{
         const update = await ChatroomModel.findByIdAndUpdate(chat, {
             $set:{messages:arr}
         })
+        socket.broadcast.emit("newMessage", newtest)
         console.log("New Message added")
     })
 })

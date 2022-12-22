@@ -24,14 +24,37 @@ import { BiSmile } from "react-icons/bi";
 import { ImAttachment } from "react-icons/im";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { BsChatText } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
+import io from 'socket.io-client'
+
+const endpoint = 'http://localhost:8080/'
+let socket;
 
 const Chat = () => {
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
 
-  const handleSend = () => {};
+  const loginedUser = {
+    "currentChatroom": "63a4389f63b0fe2e5e5fc640",
+    "_id": "63a4466163b0fe2e5e5fc696",
+    "name": "user9",
+    "email": "user9@gmail.com",
+    "password": "1234",
+    "mainTask": [],
+    "soloTask": []
+  }
+
+  const handleSend = () => {
+    socket.emit('newMsg', 
+        {
+          msg:message,
+          sender:loginedUser._id,
+          chat:loginedUser.currentChatroom
+        }
+    )
+    console.log('message sent')
+  };
 
   const handleChange = (e) => {
     setMessage(e.target.value);
@@ -40,6 +63,17 @@ const Chat = () => {
   const handleClick = () => {
     setIsActive(!isActive);
   };
+
+  useEffect(()=>{
+    socket = io.connect(endpoint)
+    socket.emit('setup', loginedUser.currentChatroom)
+  }, [])
+
+  useEffect(()=>{
+    socket.on("newMessage", (msg)=>{
+      console.log(msg)
+    })
+  }, [socket])
 
   return (
     <>
