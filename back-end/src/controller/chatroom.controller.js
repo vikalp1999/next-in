@@ -4,6 +4,7 @@ const UserModel = require('../model/user.model')
 const NewChatroom = async (lead, name) => {
     try {
         let chatroom = await ChatRoomModel.create({roomLead:lead, name})
+        let user = await UserModel.findByIdAndUpdate(lead, {$set: {currentChatroom:chatroom._id}}, {new:true})
         chatroom = await ChatRoomModel.findById(chatroom._id).populate("roomLead")
         let user = await UserModel.findByIdAndUpdate(lead, {currentChatroom:chatroom._id})
         return {
