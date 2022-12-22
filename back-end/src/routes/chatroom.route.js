@@ -1,5 +1,5 @@
 const {Router} = require('express')
-const {NewChatroom, JoinChatroom} = require('../controller/chatroom.controller')
+const {NewChatroom, JoinChatroom, GetChatroom} = require('../controller/chatroom.controller')
 
 const router = Router()
 
@@ -16,5 +16,10 @@ router.post('/join/:id', async (req, res)=> {
     res.status(200).send(data)
 })
 
+router.get("/:id", async (req, res)=>{
+    const {id} = req.params
+    const data = await GetChatroom(id)
+    res.status(200).send(data)
+})
 
 module.exports = router

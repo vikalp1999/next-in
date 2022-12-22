@@ -22,8 +22,13 @@ const chatRoomSchema= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"task" 
     }]
+   },
+   messages:{
+    type:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"message"
+    }]
    }
-   
 })
 
 const ChatRoomModel= mongoose.model("chatroom",chatRoomSchema);
