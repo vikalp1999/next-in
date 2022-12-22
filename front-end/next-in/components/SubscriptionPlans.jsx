@@ -45,7 +45,7 @@ export const SubscriptionPlans = () => {
                     </CardHeader>
                     <CardBody>
                         <UnorderedList display="flex" flexDirection="column" gap={"18px"} mb={"30px"} >
-                            {plan.features.map((feature)=>(<ListItem fontSize={{base:"1.2em", lg:"1em"}} color="#535353" fontWeight={"600"}>{feature}</ListItem>))}
+                            {plan.features.map((feature, i)=>(<ListItem key={i} fontSize={{base:"1.2em", lg:"1em"}} color="#535353" fontWeight={"600"}>{feature}</ListItem>))}
                         </UnorderedList>
                     </CardBody>
                     <CardFooter display={"flex"} flexDirection="column" gap="20px">
