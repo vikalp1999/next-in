@@ -11,7 +11,7 @@ export default function Tester() {
         socket.emit('setup', '63a417eb102fa15a6c9843eb')
         socket.emit('newMsg', 
             {
-                msg:"Hello",
+                msg:"Or bhai kya haal h",
                 sender:"63a3f0feba34e12291c0b54a",
                 chat:"63a417eb102fa15a6c9843eb"
             }

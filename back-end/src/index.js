@@ -54,8 +54,11 @@ io.on('connection', (socket)=>{
             chat,
         })
         await newtest.save()
+        const chatroom = await ChatroomModel.findById(chat)
+        let arr = [...chatroom.messages]
+        arr.push(newtest._id)
         const update = await ChatroomModel.findByIdAndUpdate(chat, {
-            $set:{messages:[]}
+            $set:{messages:arr}
         })
         console.log("New Message added")
     })

@@ -1,9 +1,11 @@
 const ChatRoomModel = require('../model/chatRoom.model')
+const UserModel = require('../model/user.model')
 
 const NewChatroom = async (lead, name) => {
     try {
         let chatroom = await ChatRoomModel.create({roomLead:lead, name})
         chatroom = await ChatRoomModel.findById(chatroom._id).populate("roomLead")
+        let user = await UserModel.findByIdAndUpdate(lead, {currentChatroom:chatroom._id})
         return {
             error:false,
             chatroom,
@@ -29,11 +31,12 @@ const JoinChatroom = async (user, id) => {
                 }
             }
             arr.push(user)
+            let upUser = await UserModel.findByIdAndUpdate(user, {currentChatroom:chatroom._id})
             const update = await ChatRoomModel.findByIdAndUpdate(
                 id,
                 { $set: { members:arr } },
                 { new: true }
-            ).populate(["members", "roomLead", "alltasks", {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, ])
+            ).populate(["members", "roomLead", "alltasks", {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, "messages" ])
             
             return {
                 error:false,
@@ -53,4 +56,29 @@ const JoinChatroom = async (user, id) => {
     }
 }
 
-module.exports = {NewChatroom, JoinChatroom}
+const GetChatroom = async (id)=> {
+    try {
+        const update = await 
+        ChatRoomModel.findById(id)
+        .populate(["members", "roomLead", "alltasks", {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, "messages" ])
+
+        if(update) {
+            return {
+                error:false, 
+                chatroom:update
+            }
+        } else {
+            return {
+                error:true, 
+                msg:"Chatroom not found"
+            }
+        }
+    } catch (error) {
+        return {
+                error:true, 
+                msg:error
+            }
+    }
+}
+
+module.exports = {NewChatroom, JoinChatroom, GetChatroom}
