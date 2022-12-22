@@ -2,63 +2,96 @@
 import { FaFacebookF } from 'react-icons/fa';
 import { BsGoogle, BsLinkedin, BsTwitter } from 'react-icons/bs';
 import { useState } from "react"
+import { useSelector, useDispatch } from "react-redux";
+import { loginUser, registerUser } from '../redux/auth/auth.action';
 
 export default function Auth() {
-    const [left, setLeft] = useState("");
+    const [regi, setRegi] = useState("");
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        password: ""
+    })
+    const dispatch = useDispatch()
+    const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
+    console.log(userData)
+
+    const handleChange = (event) => {
+        const { value, name } = event.target;
+        setForm(
+            {
+                ...form,
+                [name]: value
+            }
+        )
+    }
+
+    const handleSignup = (event) => {
+        event.preventDefault();
+        dispatch(registerUser(form)).then(() => {
+            setRegi("")
+        })
+    }
+
+    const handleLogin = (event) => {
+        event.preventDefault();
+        dispatch(loginUser(form))
+    }
+
     return (
         <>
-            <div class={`container ${left}`}>
-                <div class="forms-container">
-                    <div class="signin-signup">
-                        <form action="#" class="sign-in-form">
-                            <h2 class="title">Sign in</h2>
-                            <div class="input-field">
-                                <input type="email" placeholder="Email" />
+            <div className={`container ${regi}`}>
+                <div className="forms-container">
+                    <div className="signin-signup">
+                        <form onSubmit={handleLogin} action="#" className="sign-in-form">
+                            <h2 className="title">Sign in</h2>
+                            <div className="input-field">
+                                <input name='email' type="email" onChange={handleChange} placeholder="Email" />
                             </div>
-                            <div class="input-field">
-                                <input type="password" placeholder="Password" />
+                            <div className="input-field">
+                                <input name='password' type="password" onChange={handleChange} placeholder="Password" />
                             </div>
-                            <input type="submit" value="Login" class="btn solid" />
-                            <p class="social-text">Or Sign in with social platforms</p>
-                            <div class="social-media">
-                                <a href="#" class="social-icon">
+                            <input type="submit" value="Login" className="btn solid" />
+                            <p className="social-text">Or Sign in with social platforms</p>
+                            <div className="social-media">
+                                <a href="#" className="social-icon">
                                     <FaFacebookF />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsTwitter />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsGoogle />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsLinkedin />
                                 </a>
                             </div>
                         </form>
-                        <form action="#" class="sign-up-form">
-                            <h2 class="title">Sign up</h2>
-                            <div class="input-field">
-                                <input type="text" placeholder="Name" />
+                        <form onSubmit={handleSignup} action="#" className="sign-up-form">
+                            <h2 className="title">Sign up</h2>
+                            <div className="input-field">
+                                <input name='name' type="text" onChange={handleChange} placeholder="Name" />
                             </div>
-                            <div class="input-field">
-                                <input type="email" placeholder="Email" />
+                            <div className="input-field">
+                                <input name='email' type="email" onChange={handleChange} placeholder="Email" />
                             </div>
-                            <div class="input-field">
-                                <input type="password" placeholder="Password" />
+                            <div className="input-field">
+                                <input name='password' type="password" onChange={handleChange} placeholder="Password" />
                             </div>
-                            <input type="submit" class="btn" value="Sign up" />
-                            <p class="social-text">Or Sign up with social platforms</p>
-                            <div class="social-media">
-                                <a href="#" class="social-icon">
+                            <input type="submit" className="btn" value="Sign up" />
+                            <p className="social-text">Or Sign up with social platforms</p>
+                            <div className="social-media">
+                                <a href="#" className="social-icon">
                                     <FaFacebookF />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsTwitter />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsGoogle />
                                 </a>
-                                <a href="#" class="social-icon">
+                                <a href="#" className="social-icon">
                                     <BsLinkedin />
                                 </a>
                             </div>
@@ -66,32 +99,32 @@ export default function Auth() {
                     </div>
                 </div>
 
-                <div class="panels-container">
-                    <div class="panel left-panel">
-                        <div class="content">
+                <div className="panels-container">
+                    <div className="panel left-panel">
+                        <div className="content">
                             <h3>New here ?</h3>
                             <p>
                                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
                                 ex ratione. Aliquid!
                             </p>
-                            <button class="btn transparent" onClick={() => { setLeft("sign-up-mode") }}>
+                            <button className="btn transparent" onClick={() => { setRegi("sign-up-mode") }}>
                                 Sign up
                             </button>
                         </div>
-                        <img src="https://raw.githubusercontent.com/sefyudem/Sliding-Sign-In-Sign-Up-Form/955c6482aeeb2f0e77c1f3c66354da3bc4d7a72d/img/log.svg" class="image" alt="" />
+                        <img src="https://raw.githubusercontent.com/sefyudem/Sliding-Sign-In-Sign-Up-Form/955c6482aeeb2f0e77c1f3c66354da3bc4d7a72d/img/log.svg" className="image" alt="" />
                     </div>
-                    <div class="panel right-panel">
-                        <div class="content">
+                    <div className="panel right-panel">
+                        <div className="content">
                             <h3>One of us ?</h3>
                             <p>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
                                 laboriosam ad deleniti.
                             </p>
-                            <button class="btn transparent" id="sign-in-btn" onClick={() => { setLeft("") }}>
+                            <button className="btn transparent" id="sign-in-btn" onClick={() => { setRegi("") }}>
                                 Sign in
                             </button>
                         </div>
-                        <img src="https://raw.githubusercontent.com/sefyudem/Sliding-Sign-In-Sign-Up-Form/955c6482aeeb2f0e77c1f3c66354da3bc4d7a72d/img/register.svg" class=" image" alt="" />
+                        <img src="https://raw.githubusercontent.com/sefyudem/Sliding-Sign-In-Sign-Up-Form/955c6482aeeb2f0e77c1f3c66354da3bc4d7a72d/img/register.svg" className=" image" alt="" />
                     </div>
                 </div>
             </div>
