@@ -34,6 +34,12 @@ const userSchema= mongoose.Schema({
                 ref:"task"
             }
         ]
+    },
+    currentChatroom:{
+        type:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"chatroom"
+        }
     }
 })
 
@@ -41,4 +47,3 @@ const userSchema= mongoose.Schema({
 const UserModel= mongoose.model("user",userSchema);
 module.exports= UserModel
 
- 
