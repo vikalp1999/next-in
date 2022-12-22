@@ -8,7 +8,7 @@ export default function Dashboard (){
     return(
         <>
             <AllUser />
-            <Chat/>
+            {/* <Chat/> */}
         </>
     )
 }

@@ -42,12 +42,12 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket)=>{
-    socket.on('setup', (chatroom)=>{
+    socket.once('setup', (chatroom)=>{
         socket.join(chatroom)
         console.log(socket.id, "has joined", chatroom)
     })
 
-    socket.on("newMsg", async ({msg,sender,chat})=>{
+    socket.once("newMsg", async ({msg,sender,chat})=>{
         const newtest = new MessageModel({
             msg, 
             sender,

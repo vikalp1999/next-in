@@ -28,15 +28,18 @@ import { useEffect, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import io from 'socket.io-client'
 
-const endpoint = 'http://localhost:8080/'
-let socket;
+const endpoint = "http://localhost:8080/"
+// 'https://next-in-back-end.onrender.com/'
+let arr = []
 
 const Chat = () => {
+  let socket = io.connect(endpoint)
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
+  const [msgs, changeMsgs] = useState(arr)
 
   const loginedUser = {
-    "currentChatroom": "63a4389f63b0fe2e5e5fc640",
+    "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
     "_id": "63a439ee63b0fe2e5e5fc64a",
     "name": "user9",
     "email": "user9@gmail.com",
@@ -46,13 +49,11 @@ const Chat = () => {
   }
 
   const handleSend = () => {
-    socket.emit('newMsg', 
-        {
-          msg:message,
-          sender:loginedUser._id,
-          chat:loginedUser.currentChatroom
-        }
-    )
+    socket.emit('newMsg', {
+      msg:message,
+      sender:loginedUser._id,
+      chat:loginedUser.currentChatroom
+    })
     console.log('message sent')
   };
 
@@ -64,17 +65,16 @@ const Chat = () => {
     setIsActive(!isActive);
   };
 
+  socket.emit('setup', loginedUser.currentChatroom)
+  
   useEffect(()=>{
-    socket = io.connect(endpoint)
-    socket.emit('setup', loginedUser.currentChatroom)
-  }, [])
-
-  useEffect(()=>{
-    socket.on("newMessage", (msg)=>{
-      console.log(msg)
+    socket.off("newMessage").on("newMessage", (msg)=>{
+      console.log(msg,"from backend")
+      arr.push(msg)
+      changeMsgs(arr)
     })
-  }, [socket])
-
+  }, [])
+  console.log(msgs)
   return (
     <>
       <Button
