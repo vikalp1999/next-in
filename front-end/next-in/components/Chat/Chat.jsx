@@ -68,8 +68,8 @@ const Chat = () => {
       </Button>
       <Flex
         display={isActive ? "flex" : "none"}
-        w="25vw"
-        position={"relative"}
+        w={{base:"100vw",md:"60vw", lg:"25vw"}}
+        position={"fixed"}
         top="0px"
         left="75vw"
         height={"100vh"}
