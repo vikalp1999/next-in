@@ -24,7 +24,7 @@ import { BiSmile } from "react-icons/bi";
 import { ImAttachment } from "react-icons/im";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { BsChatText } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import io from 'socket.io-client'
 
@@ -37,7 +37,8 @@ const Chat = () => {
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
   const [msgs, changeMsgs] = useState(arr)
-
+  const send=useRef("")
+  
   const loginedUser = {
     "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
     "_id": "63a439ee63b0fe2e5e5fc64a",
@@ -54,11 +55,14 @@ const Chat = () => {
       sender:loginedUser._id,
       chat:loginedUser.currentChatroom
     })
+    send.current=""
     console.log('message sent')
   };
 
   const handleChange = (e) => {
+    
     setMessage(e.target.value);
+    
   };
 
   const handleClick = () => {
@@ -161,8 +165,10 @@ const Chat = () => {
             bg="#F7F7F7"
             justifyContent={"flex-end"}
           >
-            <Flex className="SelfMsgContainer" alignItems="flex-end" gap="10px">
-              <Card
+              {
+                msgs&& msgs.map((el)=>
+            <Flex className="SelfMsgContainer" alignItems="flex-end"  gap="10px">
+                <Card
                 bg="#2F80ED"
                 borderRadius={"20px 20px 0px 20px"}
                 flexGrow={1}
@@ -173,10 +179,7 @@ const Chat = () => {
                   p="20px 20px 0px 20px"
                   fontSize={{ base: "0.8em", md: "0.6em", xl: "0.8em" }}
                 >
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Officia obcaecati mollitia a fugiat quidem explicabo, nam
-                  rerum. Sit, debitis esse velit reiciendis natus maiores ab
-                  nam, dolor nemo quasi explicabo.
+                  {el.msg}
                 </CardBody>
                 <CardFooter
                   p="20px 20px 10px 0"
@@ -189,6 +192,8 @@ const Chat = () => {
               </Card>
               <Avatar size={{ base: "md", md: "sm", xl: "md" }} />
             </Flex>
+                )
+              }
             <Flex
               className="OthersMsgContainer"
               alignItems="flex-end"
@@ -258,6 +263,7 @@ const Chat = () => {
                   flexGrow={1}
                   borderRadius="10px"
                   onChange={handleChange}
+                  ref={send}
                 />
                 <Icon
                   as={ImAttachment}
