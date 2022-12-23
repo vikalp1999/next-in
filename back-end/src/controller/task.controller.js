@@ -71,4 +71,16 @@ const DelTask = async (task, chatroom) => {
     }
 }
 
-module.exports = {AddTaskLead, DelTask}
+
+ const updateTask= async(req,res)=>{
+    const id= req.params.id;
+    const {changestatus}=req.body
+    const task = await TaskModel.findByIdAndUpdate(
+        id,
+        { $set: { status: changestatus  } },
+        { new: true }
+    ) ;
+    res.status(200).send(task)
+}
+
+module.exports = {AddTaskLead, DelTask, updateTask}

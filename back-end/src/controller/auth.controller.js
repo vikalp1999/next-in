@@ -1,5 +1,5 @@
 const UserModel = require("../model/user.model")
-
+const jwt= require("jsonwebtoken")
 const AuthSignup = async (email, password, name) => {
     try {
         const user = await UserModel.findOne({email})
@@ -34,9 +34,19 @@ const AuthLogin = async (email, password)=>{
             }
         } else {
             delete user.password
+            const token= jwt.sign({
+                ...user
+            },"VIKALP@99",{
+                expiresIn:"7 days"
+            })
+            const refreshToken=jwt.sign({id:user._id},"REFRESHSECRET",{
+                expiresIn:"28 days"
+            })
             return {
                 error:false,
-                user:user
+                user:user,
+                token,
+                refreshToken
             }
         }
     } catch (error) {

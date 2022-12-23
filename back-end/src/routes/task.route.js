@@ -1,6 +1,6 @@
 const TaskModel = require('../model/task.model')
 const express = require('express')
-const {AddTaskLead, DelTask} = require('../controller/task.controller')
+const {AddTaskLead, DelTask, updateTask} = require('../controller/task.controller')
 
 const router = express.Router()
 
@@ -15,5 +15,7 @@ router.post('/deltask', async (req, res)=>{
     let data = await DelTask(task, chatroom)
     res.status(200).send(data)
 })
+
+router.route('/updatestatus/:id').post(updateTask)
 
 module.exports = router
