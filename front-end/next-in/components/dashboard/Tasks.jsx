@@ -86,9 +86,8 @@ const TaskContentProject = () => {
     // const { userData } = useSelector(store => store.auth);
     // // const userId = teamData.
     // console.log("userData", userData)
-    console.log("teamData", teamData)
     const taskData = teamData.chatroom?.alltasks;
-    console.log("taskData", taskData);
+    // console.log("taskData", taskData);
     // const 
 
     return (

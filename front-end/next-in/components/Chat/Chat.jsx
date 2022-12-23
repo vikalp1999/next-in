@@ -17,31 +17,25 @@ import { BsChatText } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import io from 'socket.io-client'
+import { useSelector } from 'react-redux'
 
 const endpoint = 'https://next-in-back-end.onrender.com/'
 let arr = []
-const loginedUser = {
-  "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
-  "_id": "63a439ee63b0fe2e5e5fc64a",
-  "name": "user9",
-  "email": "user9@gmail.com",
-  "password": "1234",
-  "mainTask": [],
-  "soloTask": []
-}
 
 const Chat = () => {
   let socket = io.connect(endpoint)
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
   const [msgs, changeMsgs] = useState(arr)
-  
+  const {auth, team} = useSelector(state=>state)
+
+  console.log(auth.userData.user, team.teamData)
 
   const handleSend = () => {
     socket.emit('newMsg', {
       msg:message,
-      sender:loginedUser._id,
-      chat:loginedUser.currentChatroom
+      sender:auth.userData.user._id,
+      chat:team.teamData._id
     })
     console.log('message sent')
   };
@@ -54,7 +48,7 @@ const Chat = () => {
     setIsActive(!isActive);
   };
 
-  socket.emit('setup', loginedUser.currentChatroom)
+  socket.emit('setup', team.teamData._id)
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
@@ -62,10 +56,13 @@ const Chat = () => {
       changeMsgs([...arr])
     })
   }, [])
-
+  
   useEffect(()=>{
-    console.log(msgs)
-  }, [msgs])
+    console.log(team.teamData)
+    if(team.teamData.messages!=undefined){
+      changeMsgs([...team.teamData.messages])
+    }
+  }, [team.teamData])
   return (
     <>
       <Button

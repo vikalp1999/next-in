@@ -40,7 +40,6 @@ export default function AllUser({ children }) {
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
     const { teamData } = useSelector(store => store.team);
-    console.log("teamData", teamData)
     // console.log("🚀 ~ file: alluser.jsx:37 ~ AllUser ~ isRegistered", userData)
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()

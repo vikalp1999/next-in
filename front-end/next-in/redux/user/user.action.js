@@ -7,7 +7,7 @@ export const teamAction = (id) => async (dispatch) => {
     try {
         const res = await axios.get(`${API}/chatroom/${id}`);
         const data = await res.data;
-        console.log("data",data)
+        // console.log("data",data)
         dispatch({ type: GET_USER_REQUEST, payload: data })
     } catch (error) {
         console.log(error.message)

@@ -61,7 +61,7 @@ io.on('connection', (socket)=>{
             $set:{messages:arr}
         })
         const getMsg = await MessageModel.findById(newtest._id).populate("sender") 
-        socket.broadcast.emit("newMessage", newtest)
+        socket.broadcast.emit("newMessage", getMsg)
         console.log("New Message added")
     })
 })
