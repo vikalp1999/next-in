@@ -36,6 +36,7 @@ var teamId = "";
 var code = "";
 var teamName = ""
 
+let API = process.env.NEXT_PUBLIC_API_LINK;
 export default function AllUser({ children }) {
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
@@ -145,7 +146,7 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
         // console.log(taskData)
         const cred = { ...task, ...taskData.current }
         // console.log(cred)
-        let res = await axios.post("http://localhost:8080/task/addtask", cred)
+        let res = await axios.post(`${API}/task/addtask`, cred)
         let data = await res.data;
         console.log("final", data)
         onClose()
