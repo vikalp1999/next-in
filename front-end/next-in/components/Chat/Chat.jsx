@@ -29,13 +29,13 @@ const Chat = () => {
   const [msgs, changeMsgs] = useState(arr)
   const {auth, team} = useSelector(state=>state)
 
-  console.log(auth.userData.user, team.teamData)
+  console.log(team.teamData)
 
   const handleSend = () => {
     socket.emit('newMsg', {
       msg:message,
       sender:auth.userData.user._id,
-      chat:team.teamData._id
+      chat:team.teamData.chatroom?._id
     })
     console.log('message sent')
   };
@@ -48,7 +48,7 @@ const Chat = () => {
     setIsActive(!isActive);
   };
 
-  socket.emit('setup', team.teamData._id)
+  socket.emit('setup', team.teamData.chatroom?._id)
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
@@ -59,8 +59,8 @@ const Chat = () => {
   
   useEffect(()=>{
     console.log(team.teamData)
-    if(team.teamData.messages!=undefined){
-      changeMsgs([...team.teamData.messages])
+    if(team.teamData.chatroom?.messages!=undefined){
+      changeMsgs([...team.teamData.chatroom?.messages])
     }
   }, [team.teamData])
   return (
@@ -121,7 +121,7 @@ const Chat = () => {
               size={{ base: "xs", lg: "sm", xl: "md" }}
               fontFamily="Poppins"
             >
-              Vikalp's Workspace
+              {team.teamData.chatroom?.name}
             </Heading>
             <Button
               onClick={handleClick}
@@ -148,6 +148,7 @@ const Chat = () => {
             gap="20px"
             bg="#F7F7F7"
             justifyContent={"flex-end"}
+            overflowY='auto'
           >
             {msgs.map(ele=><ChatBubble data={ele}/>)}  
           </CardBody>
