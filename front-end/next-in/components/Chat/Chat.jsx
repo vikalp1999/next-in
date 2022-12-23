@@ -5,49 +5,37 @@ import {
   CardBody,
   CardFooter,
   Heading,
-  Stack,
-  Box,
-  Text,
-  StackDivider,
-  ButtonGroup,
   Button,
-  InputGroup,
   Icon,
-  Menu,
   Input,
-  Divider,
-  Avatar,
-  useDisclosure,
-  Drawer,
 } from "@chakra-ui/react";
+import ChatBubble from "./ChatBubble";
 import { BiSmile } from "react-icons/bi";
 import { ImAttachment } from "react-icons/im";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { BsChatText } from "react-icons/bs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import io from 'socket.io-client'
 
-const endpoint = "http://localhost:8080/"
-// 'https://next-in-back-end.onrender.com/'
+const endpoint = 'https://next-in-back-end.onrender.com/'
 let arr = []
+const loginedUser = {
+  "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
+  "_id": "63a439ee63b0fe2e5e5fc64a",
+  "name": "user9",
+  "email": "user9@gmail.com",
+  "password": "1234",
+  "mainTask": [],
+  "soloTask": []
+}
 
 const Chat = () => {
   let socket = io.connect(endpoint)
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
   const [msgs, changeMsgs] = useState(arr)
-  const send=useRef("")
   
-  const loginedUser = {
-    "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
-    "_id": "63a439ee63b0fe2e5e5fc64a",
-    "name": "user9",
-    "email": "user9@gmail.com",
-    "password": "1234",
-    "mainTask": [],
-    "soloTask": []
-  }
 
   const handleSend = () => {
     socket.emit('newMsg', {
@@ -55,14 +43,11 @@ const Chat = () => {
       sender:loginedUser._id,
       chat:loginedUser.currentChatroom
     })
-    send.current=""
     console.log('message sent')
   };
 
   const handleChange = (e) => {
-    
     setMessage(e.target.value);
-    
   };
 
   const handleClick = () => {
@@ -73,12 +58,14 @@ const Chat = () => {
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
-      console.log(msg,"from backend")
       arr.push(msg)
-      changeMsgs(arr)
+      changeMsgs([...arr])
     })
   }, [])
-  console.log(msgs)
+
+  useEffect(()=>{
+    console.log(msgs)
+  }, [msgs])
   return (
     <>
       <Button
@@ -165,74 +152,7 @@ const Chat = () => {
             bg="#F7F7F7"
             justifyContent={"flex-end"}
           >
-              {
-                msgs&& msgs.map((el)=>
-            <Flex className="SelfMsgContainer" alignItems="flex-end"  gap="10px">
-                <Card
-                bg="#2F80ED"
-                borderRadius={"20px 20px 0px 20px"}
-                flexGrow={1}
-                color="white"
-              >
-                {/* <CardHeader p="20px 20px 0px 20px" fontWeight={"600"} color="">Name</CardHeader> */}
-                <CardBody
-                  p="20px 20px 0px 20px"
-                  fontSize={{ base: "0.8em", md: "0.6em", xl: "0.8em" }}
-                >
-                  {el.msg}
-                </CardBody>
-                <CardFooter
-                  p="20px 20px 10px 0"
-                  justifyContent={"flex-end"}
-                  fontSize="0.7em"
-                  pt="0px"
-                >
-                  4:06 pm
-                </CardFooter>
-              </Card>
-              <Avatar size={{ base: "md", md: "sm", xl: "md" }} />
-            </Flex>
-                )
-              }
-            <Flex
-              className="OthersMsgContainer"
-              alignItems="flex-end"
-              gap="10px"
-              flexDirection={"row-reverse"}
-            >
-              <Card
-                color="#1B1A57"
-                borderRadius={"20px 20px 20px 0px"}
-                flexGrow={1}
-                bg="#E8F1FB"
-              >
-                <CardHeader
-                  p="20px 20px 0px 20px"
-                  fontWeight={"600"}
-                  fontSize={{ base: "0.5em", md: "0.7em", xl: "0.9em" }}
-                  color="#F5B544"
-                >
-                  Sender's Name
-                </CardHeader>
-                <CardBody
-                  p="0px 20px 0px 20px"
-                  fontSize={{ base: "0.8em", md: "0.6em", xl: "0.8em" }}
-                >
-                  Lorem ipsum, dolor sit amet consectetur adipisicing nam rerum.
-                  Sit, debitis esse velit reiciendis natus maiores ab nam, dolor
-                  nemo quasi explicabo.
-                </CardBody>
-                <CardFooter
-                  p="20px 20px 10px 0"
-                  justifyContent={"flex-end"}
-                  fontSize={{ base: "0.7em", md: "0.5em", xl: "0.7em" }}
-                  pt="0px"
-                >
-                  4:06 pm
-                </CardFooter>
-              </Card>
-              <Avatar size={{ base: "md", md: "sm", xl: "md" }} />
-            </Flex>
+            {msgs.map(ele=><ChatBubble data={ele}/>)}  
           </CardBody>
           <CardFooter
             sx={{
@@ -263,7 +183,6 @@ const Chat = () => {
                   flexGrow={1}
                   borderRadius="10px"
                   onChange={handleChange}
-                  ref={send}
                 />
                 <Icon
                   as={ImAttachment}
