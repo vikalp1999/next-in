@@ -29,15 +29,14 @@ const Chat = () => {
   const [msgs, changeMsgs] = useState(arr)
   const {auth, team} = useSelector(state=>state)
 
-  console.log(team.teamData)
-
+  
   const handleSend = () => {
     socket.emit('newMsg', {
       msg:message,
       sender:auth.userData.user._id,
       chat:team.teamData.chatroom?._id
     })
-    console.log('message sent')
+    setMessage("")
   };
 
   const handleChange = (e) => {
@@ -47,18 +46,17 @@ const Chat = () => {
   const handleClick = () => {
     setIsActive(!isActive);
   };
-
+  
   socket.emit('setup', team.teamData.chatroom?._id)
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
+      arr = msgs
       arr.push(msg)
-      changeMsgs([...arr])
+      changeMsgs(arr)
     })
   }, [])
-  
   useEffect(()=>{
-    console.log(team.teamData)
     if(team.teamData.chatroom?.messages!=undefined){
       changeMsgs([...team.teamData.chatroom?.messages])
     }
@@ -181,6 +179,7 @@ const Chat = () => {
                   flexGrow={1}
                   borderRadius="10px"
                   onChange={handleChange}
+                  value={message}
                 />
                 <Icon
                   as={ImAttachment}

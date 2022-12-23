@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 export default function ChatBubble({ data }) {
   const {auth} = useSelector(state=>state)
-  console.log(data)
 
   if(data.sender._id==auth.userData.user._id){
       return (
