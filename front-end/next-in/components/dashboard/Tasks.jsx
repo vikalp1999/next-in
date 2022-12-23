@@ -85,11 +85,11 @@ const TaskContentProject = () => {
     // const { userData } = useSelector(store => store.auth);
     // // const userId = teamData.
     // console.log("userData", userData)
+    console.log("TeamData", teamData);
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
     console.log("userData-1", userData)
-    const taskData = teamData.chatroom?.alltasks;
+    const taskData = userData.user?.role === "admin" ? teamData.chatroom?.alltasks : teamData.chatroom?.alltasks.filter((task)=>task.assignee._id === userData.user._id)
     console.log("taskData-1", taskData);
-    // const 
 
     if (!!userData.user && !!teamData.chatroom) {
         if (!!userData.user.role && !!teamData.chatroom._id) {
@@ -97,6 +97,7 @@ const TaskContentProject = () => {
             code = teamData.chatroom._id
         }
     }
+    
 
     return (
         <>
@@ -206,10 +207,10 @@ const TaskCard = ({ data, status }) => {
                 <CardBody p="0px">
                     <Flex gap="10px" alignItems={"flex-start"} justifyContent="space-between">
                         <Flex gap="10px">
-                            <Avatar size="sm" name={data.assignee} />
+                            <Avatar size="sm" name={data.assignee.name} />
                             <Box dislay="flex" justifyContent={"flex-start"}>
                                 <Text fontWeight="600" fontSize="1em">{data.title}</Text>
-                                <Text>{data.assignee}</Text>
+                                <Text>{data.assignee.name}</Text>
                             </Box>
                         </Flex>
                         {
