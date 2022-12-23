@@ -61,7 +61,7 @@ const GetChatroom = async (id)=> {
     try {
         const update = await 
         ChatRoomModel.findById(id)
-        .populate(["members", "roomLead", {path:"alltasks",populate:{path:"assigner"}}, {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, "messages" ])
+        .populate(["members", "roomLead", {path:"alltasks",populate:{path:"assignee"}}, {path:"members", populate:{path:"soloTask"}}, {path:"members", populate:{path:"mainTask"}}, "messages" ])
 
         if(update) {
             return {
