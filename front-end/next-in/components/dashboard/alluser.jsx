@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
     IconButton,
+    Heading,
     Box,
     CloseButton,
     Flex,
@@ -22,6 +23,7 @@ import {
     FormLabel,
     Input
 } from '@chakra-ui/react';
+import { Divider } from '@chakra-ui/react'
 import {
     FiMenu,
 } from 'react-icons/fi';
@@ -41,9 +43,6 @@ export default function AllUser({ children }) {
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
     const { teamData } = useSelector(store => store.team);
-    // console.log("🚀 ~ file: alluser.jsx:37 ~ AllUser ~ isRegistered", userData)
-    // console.log("teamData", teamData)
-    // console.log("userData", userData)
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()
 
@@ -106,11 +105,6 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
         title: "",
         deadline: ""
     });
-
-    // console.log("check1", LinkItems)
-    // console.log("check2", teamId)
-    // console.log("check3", role)
-
     const taskData = useRef({
         assigner: "",
         assignee: "",
@@ -119,12 +113,9 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
 
     const handleTask = (assignee, chatroom) => {
         if (role == "admin") {
-            console.log(taskData)
-            console.log(teamId, assignee, chatroom)
             taskData.current.assigner = teamId;
             taskData.current.assignee = assignee;
             taskData.current.chatroom = chatroom;
-            console.log(taskData)
             onOpen()
         }
         else {
@@ -184,13 +175,16 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 pos="fixed"
                 h="full"
                 {...rest}>
-                <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-                    <Text fontSize="lg" fontFamily="monospace" fontWeight="bold">
+                <Flex h="20" alignItems="center" mx='2px'justifyContent="space-between">
+                    <Text fontSize='22px' fontWeight='bold'>
                         {teamName}<br />
-                        <Box fontSize="sm">{(role == "admin" ? code : "")}</Box>
                     </Text>
                     <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClosed} />
                 </Flex>
+                <Box fontSize="sm">{(role == "admin" ? code : "")}</Box>
+                <Divider size='10' colorScheme='blue' />
+                <Heading>Members</Heading>
+                <Divider size='10' colorScheme='blue'/> 
                 {LinkItems.map((link) => (
                     <NavItem onClick={() => { handleTask(link._id, link.currentChatroom) }} key={link.name} icon={link.icon}>
                         {link.name}
