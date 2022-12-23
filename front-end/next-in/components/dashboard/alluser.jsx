@@ -34,13 +34,15 @@ const LinkItems = [];
 var role = "";
 var teamId = "";
 var code = "";
-var teamName=""
+var teamName = ""
 
 export default function AllUser({ children }) {
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
     const { teamData } = useSelector(store => store.team);
     // console.log("🚀 ~ file: alluser.jsx:37 ~ AllUser ~ isRegistered", userData)
+    // console.log("teamData", teamData)
+    // console.log("userData", userData)
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()
 
@@ -48,7 +50,7 @@ export default function AllUser({ children }) {
         if (!!teamData.chatroom.members && LinkItems.length == 0) {
             console.log("helo")
             teamId = teamData.chatroom.roomLead._id;
-            role = teamData.chatroom.roomLead.role;
+            role = userData.user.role;
             code = teamData.chatroom._id
             teamName = teamData.chatroom.name
             LinkItems.push(...teamData.chatroom.members);
@@ -97,6 +99,7 @@ export default function AllUser({ children }) {
 }
 
 const SidebarContent = ({ onClose: onClosed, ...rest }) => {
+    const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [task, setTask] = useState({
         title: "",
@@ -145,6 +148,8 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
         let res = await axios.post("http://localhost:8080/task/addtask", cred)
         let data = await res.data;
         console.log("final", data)
+        onClose()
+        dispatch(teamAction(code))
     }
 
     return (
