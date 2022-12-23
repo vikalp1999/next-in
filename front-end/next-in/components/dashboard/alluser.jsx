@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { teamAction } from '../../redux/user/user.action';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import { BiRefresh } from 'react-icons/bi';
 
 const LinkItems = [];
 var role = "";
@@ -175,16 +176,20 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 pos="fixed"
                 h="full"
                 {...rest}>
-                <Flex h="20" alignItems="center" mx='2px'justifyContent="space-between">
+                <Flex h="20" alignItems="center" mx='2px' justifyContent="space-between">
                     <Text fontSize='22px' fontWeight='bold'>
-                        {teamName}<br />
+                        <Flex alignItems="center" gap="10px">
+                            {teamName}
+                            <BiRefresh cursor="pointer" onClick={() => { dispatch(teamAction(code)) }} />
+                        </Flex>
+                        <br />
                     </Text>
                     <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClosed} />
                 </Flex>
                 <Box fontSize="sm">{(role == "admin" ? code : "")}</Box>
                 <Divider size='10' colorScheme='blue' />
                 <Heading>Members</Heading>
-                <Divider size='10' colorScheme='blue'/> 
+                <Divider size='10' colorScheme='blue' />
                 {LinkItems.map((link) => (
                     <NavItem onClick={() => { handleTask(link._id, link.currentChatroom) }} key={link.name} icon={link.icon}>
                         {link.name}
