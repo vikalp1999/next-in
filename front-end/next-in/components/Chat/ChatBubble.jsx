@@ -1,20 +1,11 @@
 import {Flex, Card, CardBody, CardFooter, Avatar, CardHeader} from '@chakra-ui/react'
+import { useSelector } from 'react-redux'
 
-const loginedUser = {
-  "currentChatroom": "63a41c2a3a5b8ea5ea5d91f8",
-  "_id": "63a4793163b0fe2e5e5fcbb7",
-  "name": "user9",
-  "email": "user9@gmail.com",
-  "password": "1234",
-  "mainTask": [],
-  "soloTask": []
-}
 
 export default function ChatBubble({ data }) {
+  const {auth, team} = useSelector(state=>state)
 
-  console.log(data)
-
-  if(data.sender==loginedUser._id){
+  if(data.sender==auth.userData.user._id){
       return (
           <Flex className="SelfMsgContainer" alignItems="flex-end"  gap="10px">
           <Card

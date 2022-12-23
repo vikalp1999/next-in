@@ -97,7 +97,6 @@ const TaskContentProject = () => {
             code = teamData.chatroom._id
         }
     }
-    
 
     return (
         <>

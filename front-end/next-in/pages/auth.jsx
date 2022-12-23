@@ -39,7 +39,6 @@ export default function Auth() {
     })
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData, isError } = useSelector(store => store.auth);
-    console.log(userData, isAuth, isError, isRegistered)
     // modal
     const { isOpen, onOpen, onClose } = useDisclosure()
 

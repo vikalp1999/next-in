@@ -10,7 +10,7 @@ export const teamReducer = (state = initialState, { type, payload }) => {
         case GET_USER_REQUEST: {
             return {
                 ...state,
-                teamData: payload
+                teamData: {...payload.chatroom}
             }
         }
         default: {
