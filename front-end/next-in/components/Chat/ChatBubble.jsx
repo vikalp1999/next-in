@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 
 
 export default function ChatBubble({ data }) {
-  const {auth, team} = useSelector(state=>state)
+  const {auth} = useSelector(state=>state)
+  console.log(data)
 
-  if(data.sender==auth.userData.user._id){
+  if(data.sender._id==auth.userData.user._id){
       return (
           <Flex className="SelfMsgContainer" alignItems="flex-end"  gap="10px">
           <Card
@@ -54,7 +55,7 @@ export default function ChatBubble({ data }) {
                 fontSize={{ base: "0.5em", md: "0.7em", xl: "0.9em" }}
                 color="#F5B544"
               >
-                Sender's Name
+                {data.sender.name}
               </CardHeader>
               <CardBody
                 p="0px 20px 0px 20px"
