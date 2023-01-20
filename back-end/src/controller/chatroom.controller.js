@@ -6,11 +6,12 @@ const NewChatroom = async (lead, name) => {
         let chatroom = await ChatRoomModel.create({roomLead:lead, name})
         let user = await UserModel.findByIdAndUpdate(lead, {$set: {currentChatroom:chatroom._id}}, {new:true})
         chatroom = await ChatRoomModel.findById(chatroom._id).populate("roomLead")
-        let user1 = await UserModel.findByIdAndUpdate(lead, {currentChatroom:chatroom._id, role:'admin'})
+        let user1 = await UserModel.findByIdAndUpdate(lead, {currentChatroom:chatroom._id, role:'admin'}, {new:true})
         return {
             error:false,
             chatroom,
-            code:chatroom._id
+            code:chatroom._id,
+            user:user1
         }
     } catch (error) {
         return {
