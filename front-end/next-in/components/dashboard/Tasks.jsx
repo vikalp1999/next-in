@@ -82,18 +82,13 @@ const PersonalTasks = () => {
 
 const TaskContentProject = () => {
     const { teamData } = useSelector(store => store.team);
-    // const { userData } = useSelector(store => store.auth);
-    // // const userId = teamData.
-    // console.log("userData", userData)
     console.log("TeamData", teamData);
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
-    console.log("userData-1", userData)
-    const taskData = userData.user?.role === "admin" ? teamData.chatroom?.alltasks : teamData.chatroom?.alltasks.filter((task)=>task.assignee._id === userData.user._id)
-    console.log("taskData-1", taskData);
+    const taskData = userData?.role === "admin" ? teamData.chatroom?.alltasks : teamData.chatroom?.alltasks.filter((task)=>task.assignee._id === userData._id)
 
-    if (!!userData.user && !!teamData.chatroom) {
-        if (!!userData.user.role && !!teamData.chatroom._id) {
-            role = userData.user.role;
+    if (!!userData && !!teamData.chatroom) {
+        if (!!userData.role && !!teamData.chatroom._id) {
+            role = userData.role;
             code = teamData.chatroom._id
         }
     }

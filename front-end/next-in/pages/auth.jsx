@@ -1,9 +1,10 @@
 // import { container, formsContainer, signinSignup, signUpForm, signInForm, title, inputField, socialText, socialMedia, socialIcon, btnTransparent, btn, panelsContainer, image, leftPanel, rightPanel, content, head, para } from '../styles/auth.module.css';
 import { FaFacebookF } from 'react-icons/fa';
 import { BsGoogle, BsLinkedin, BsTwitter } from 'react-icons/bs';
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { loginUser, registerUser } from '../redux/auth/auth.action';
+import { useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router';
 import {
     Modal,
@@ -27,20 +28,21 @@ import {
 import axios from 'axios';
 
 let API = process.env.NEXT_PUBLIC_API_LINK;
+const initForm = {
+    name: "",
+    email: "",
+    password: ""
+}
 export default function Auth() {
+    const toast = useToast()
+    const dispatch = useDispatch()
+    const { isRegistered, isAuth, userData, isError, ErrorMsg } = useSelector(store => store.auth);
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const router = useRouter()
     const [regi, setRegi] = useState("");
     const [room, setRoom] = useState("");
     const [code, setCode] = useState("");
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        password: ""
-    })
-    const dispatch = useDispatch()
-    const { isRegistered, isAuth, userData, isError } = useSelector(store => store.auth);
-    // modal
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [form, setForm] = useState(initForm)
 
     const handleChange = (event) => {
         const { value, name } = event.target;
@@ -52,62 +54,103 @@ export default function Auth() {
         )
     }
 
-    // if (isRegistered) {
-    //     onOpen()
-    //     // setRegi("")
-    // }
-
-    if (isAuth) {
-        router.push("/dashboard")
-    }
-
-
-
     const handleSignup = (event) => {
         event.preventDefault();
         dispatch(registerUser(form));
-        onOpen()
-        if (isError) {
-            alert("SomeThing Wrong")
-        }
     }
 
     const handleLogin = (event) => {
         event.preventDefault();
         dispatch(loginUser(form))
-        if (isError) {
-            alert("SomeThing Wrong")
-        }
     }
 
     const handleCreate = async () => {
-        console.log(room, userData.user._id)
         let res = await axios.post(`${API}/chatroom/new`, {
-            lead: userData.user._id,
+            lead: userData._id,
             name: room
         })
         let data = await res.data;
         console.log(data)
-        alert("Create Successfull")
-        onClose()
-        setRegi("")
+        if(data.error==false){
+            toast({
+                title: 'Chatroom created successfully',
+                description: "We've created your chatroom for you.",
+                status: 'success',
+                duration: 4000,
+                position:'top'
+            })
+            onClose()
+            setRegi("")
+            setTimeout(()=>{
+                router.push("/dashboard")
+            }, 2500)
+        } else {
+            toast({
+                title: 'Something went wrong',
+                description: data.msg,
+                status: 'error',
+                duration: 3000,
+                position:'top'
+            })
+        }
     }
-
+    
     const handleJoin = async () => {
-        console.log(code, userData.user._id)
         let res = await axios.post(`${API}/chatroom/join/${code}`, {
-            user: userData.user._id
+            user: userData._id
         })
         let data = await res.data;
         console.log(data)
-        alert("join Successfull")
-        onClose()
-        setRegi("")
+        if(data.error==false){
+            toast({
+                title: 'Chatroom Joined.',
+                description: "Taking you to your team.",
+                status: 'success',
+                duration: 4000,
+                position:'top'
+              })
+              onClose()
+              setRegi("")
+              setTimeout(()=>{
+                router.push("/dashboard")
+              }, 2500)
+            } else {
+                toast({
+                    title: 'Something went wrong',
+                    description: data.msg,
+                    status: 'error',
+                    duration: 3000,
+                    position:'top'
+                })
+            }
     }
+
+    useEffect(() => {
+      if(isRegistered){
+        toast({
+            title: 'Account created.',
+            description: "We've created your account for you.",
+            status: 'success',
+            duration: 3000,
+            position:'top'
+          })
+        onOpen()
+      }
+    }, [isRegistered])
+    
+    useEffect(() => {
+      if(isError){
+        toast({
+            title: 'Something went wrong',
+            description: ErrorMsg,
+            status: 'error',
+            duration: 4000,
+          })
+      }
+    }, [isError])
 
     return (
         <>
-
             {/* Modal */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />

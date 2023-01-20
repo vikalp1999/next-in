@@ -51,13 +51,15 @@ const Chat = () => {
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
-      arr = msgs
-      arr.push(msg)
-      changeMsgs(arr)
+      let newArr = [...msgs]
+      newArr.push(msg)
+      changeMsgs([...newArr])
     })
   }, [])
+
   useEffect(()=>{
     if(team.teamData.chatroom?.messages!=undefined){
+      arr = [...team.teamData.chatroom?.messages]
       changeMsgs([...team.teamData.chatroom?.messages])
     }
   }, [team.teamData])

@@ -51,26 +51,27 @@ export default function AllUser({ children }) {
         if (!!teamData.chatroom.members && LinkItems.length == 0) {
             console.log("helo")
             teamId = teamData.chatroom.roomLead._id;
-            role = userData.user.role;
+            role = userData.role;
             code = teamData.chatroom._id
             teamName = teamData.chatroom.name
             LinkItems.push(...teamData.chatroom.members);
         }
     }
 
-    useEffect(() => {
-        getTeam()
-    }, [])
-
-
+    
+    
     const getTeam = async () => {
         if (!isAuth) {
             router.push("/auth")
         }
         else {
-            dispatch(teamAction(userData.user.currentChatroom))
+            dispatch(teamAction(userData.currentChatroom))
         }
     }
+    
+    useEffect(() => {
+        getTeam()
+    }, [])
 
     return (
         <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
