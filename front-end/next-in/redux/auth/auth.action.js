@@ -25,7 +25,6 @@ export const loginUser = (creds) => async (dispatch) => {
     try {
         const res = await axios.post(`${API}/auth/login`, creds);
         const data = await res.data;
-        console.log(data)
         if (!data.error) {
             dispatch({ type: AUTH_LOGIN_SUCCESS, payload: data });
         }

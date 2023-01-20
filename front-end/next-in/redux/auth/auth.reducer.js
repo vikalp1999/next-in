@@ -25,7 +25,7 @@ export const authReducer = (state = initialState, { type, payload }) => {
                 ...state,
                 isAuth: true,
                 isError: false,
-                userData: payload,
+                userData: payload.user,
                 ErrorMsg:''
             };
         }

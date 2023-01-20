@@ -26,6 +26,7 @@ import {
     Input,
 } from '@chakra-ui/react'
 import axios from 'axios';
+import { AddChatroom, teamAction } from '../redux/user/user.action';
 
 let API = process.env.NEXT_PUBLIC_API_LINK;
 const initForm = {
@@ -37,6 +38,7 @@ export default function Auth() {
     const toast = useToast()
     const dispatch = useDispatch()
     const { isRegistered, isAuth, userData, isError, ErrorMsg } = useSelector(store => store.auth);
+    const { teamData } = useSelector(store => store.team);
     const { isOpen, onOpen, onClose } = useDisclosure()
     const router = useRouter()
     const [regi, setRegi] = useState("");
@@ -70,8 +72,8 @@ export default function Auth() {
             name: room
         })
         let data = await res.data;
-        console.log(data)
         if(data.error==false){
+            dispatch(AddChatroom(data.chatroom))
             toast({
                 title: 'Chatroom created successfully',
                 description: "We've created your chatroom for you.",
@@ -81,9 +83,6 @@ export default function Auth() {
             })
             onClose()
             setRegi("")
-            setTimeout(()=>{
-                router.push("/dashboard")
-            }, 2500)
         } else {
             toast({
                 title: 'Something went wrong',
@@ -100,8 +99,8 @@ export default function Auth() {
             user: userData._id
         })
         let data = await res.data;
-        console.log(data)
         if(data.error==false){
+            dispatch(AddChatroom(data.chatroom))
             toast({
                 title: 'Chatroom Joined.',
                 description: "Taking you to your team.",
@@ -111,9 +110,6 @@ export default function Auth() {
               })
               onClose()
               setRegi("")
-              setTimeout(()=>{
-                router.push("/dashboard")
-              }, 2500)
             } else {
                 toast({
                     title: 'Something went wrong',
@@ -148,6 +144,18 @@ export default function Auth() {
           })
       }
     }, [isError])
+
+    useEffect(()=>{
+        let len = Object.keys(teamData).length
+        if(isAuth && !len){
+            if(userData.currentChatroom){
+                dispatch(teamAction(userData.currentChatroom))
+            }
+        }
+        if(isAuth && len){
+            router.push("/dashboard")
+        }
+    }, [isAuth, teamData])
 
     return (
         <>
