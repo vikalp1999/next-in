@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
     IconButton,
+    useToast,
     Heading,
     Box,
     CloseButton,
     Flex,
+    ModalFooter,
     Icon,
     useColorModeValue,
     Link,
@@ -92,6 +94,8 @@ export default function AllUser({ children }) {
 const SidebarContent = ({ onClose: onClosed, ...rest }) => {
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const toast = useToast()
+    const { isOpen:isOpen1, onOpen:onOpen1, onClose:onClose1 } = useDisclosure()
     const [task, setTask] = useState({
         title: "",
         deadline: ""
@@ -124,10 +128,7 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
     }
 
     const AddTask = async () => {
-        // console.log(task)
-        // console.log(taskData)
         const cred = { ...task, ...taskData.current }
-        // console.log(cred)
         let res = await axios.post(`${API}/task/addtask`, cred)
         let data = await res.data;
         console.log("final", data)
@@ -157,7 +158,34 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
 
                 </ModalContent>
             </Modal>
-
+            <Modal isOpen={isOpen1} onClose={onClose1}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>Invite more Teammates!</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <Text>Share this code with your teammates</Text>
+                    <Text>{code}</Text>
+                </ModalBody>
+                <ModalFooter>
+                    <Button colorScheme='blue' mr={3} onClick={onClose1}>
+                    Close
+                    </Button>
+                    <Button variant='ghost' onClick={()=>{
+                        navigator.clipboard.writeText(code);
+                        toast({
+                            position: 'top',
+                            duration: 2000,
+                            render: () => (
+                              <Box color='white' p={3} bg='gray' borderRadius={'10px'}>
+                                Code copied to clipboard
+                              </Box>
+                            ),})
+                            onClose1()
+                    }}>Copy Code</Button>
+                </ModalFooter>
+                </ModalContent>
+            </Modal>
             <Box
                 bg={useColorModeValue('white', 'gray.900')}
                 borderRight="1px"
@@ -166,17 +194,16 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 pos="fixed"
                 h="full"
                 {...rest}>
-                <Flex h="20" alignItems="center" mx='2px' justifyContent="space-between">
+                <Flex mx='2px' py='15px' justifyContent="space-around">
                     <Text fontSize='22px' fontWeight='bold'>
                         <Flex alignItems="center" gap="10px">
                             {teamName}
                             <BiRefresh cursor="pointer" onClick={() => { dispatch(teamAction(code)) }} />
                         </Flex>
-                        <br />
                     </Text>
                     <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClosed} />
                 </Flex>
-                <Box fontSize="sm">{(role == "admin" ? code : "")}</Box>
+                {role=='admin'?<Button display={'block'} m='auto' onClick={onOpen1}>Invite more members</Button>:null}
                 <Divider size='10' colorScheme='blue' />
                 <Heading>Members</Heading>
                 <Divider size='10' colorScheme='blue' />
