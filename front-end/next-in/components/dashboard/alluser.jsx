@@ -41,7 +41,6 @@ var teamName = ""
 
 let API = process.env.NEXT_PUBLIC_API_LINK;
 export default function AllUser({ children }) {
-    const dispatch = useDispatch()
     const { isAuth, userData } = useSelector(store => store.auth);
     const { teamData } = useSelector(store => store.team);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -56,20 +55,11 @@ export default function AllUser({ children }) {
             LinkItems.push(...teamData.members);
         }
     }
-
     
-    
-    const getTeam = async () => {
+    useEffect(() => {
         if (!isAuth) {
             router.push("/auth")
         }
-        // else {
-        //     dispatch(teamAction(userData.currentChatroom))
-        // }
-    }
-    
-    useEffect(() => {
-        getTeam()
     }, [])
 
     return (
@@ -172,7 +162,7 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 bg={useColorModeValue('white', 'gray.900')}
                 borderRight="1px"
                 borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-                w={{ base: 'full', md: 60 }}
+                w={'19.5%'}
                 pos="fixed"
                 h="full"
                 {...rest}>
@@ -190,42 +180,53 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 <Divider size='10' colorScheme='blue' />
                 <Heading>Members</Heading>
                 <Divider size='10' colorScheme='blue' />
+                <Box
+                h={'100%'}
+                overflowY={'auto'}
+                scrollBehavior={'smooth'}
+                >
                 {LinkItems.map((link) => (
-                    <NavItem onClick={() => { handleTask(link._id, link.currentChatroom) }} key={link.name} icon={link.icon}>
+                    <NavItem onClick={() => { handleTask(link._id, link.currentChatroom) }} key={link.name}>
                         {link.name}
                     </NavItem>
                 ))}
+                </Box>
             </Box>
         </>
     );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ children, ...rest }) => {
+    var colors = ['red', 'blue','green','cyan','orange', 'purple'];
+    var new_color = colors[Math.floor(Math.random()*colors.length)];
     return (
         <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
             <Flex
                 align="center"
-                p="4"
-                mx="4"
+                p="2"
+                mr="4"
                 borderRadius="lg"
                 role="group"
                 cursor="pointer"
                 _hover={{
-                    bg: 'cyan.400',
+                    bg: '#9AB7F5',
                     color: 'white',
                 }}
+                justifyContent={'space-around'}
                 {...rest}>
-                {icon && (
-                    <Icon
-                        mr="4"
-                        fontSize="16"
-                        _groupHover={{
-                            color: 'white',
-                        }}
-                        as={icon}
-                    />
-                )}
-                {children}
+                    <Flex
+                    backgroundColor={new_color}
+                    borderRadius={'50%'}
+                    h='45px'
+                    w='45px'
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    >
+                        <Heading fontSize={'18px'} color={'white'}>
+                            {children[0]}
+                        </Heading>
+                    </Flex>
+                    <Heading w='75%' fontSize={'20px'}>{children}</Heading>
             </Flex>
         </Link>
     );
