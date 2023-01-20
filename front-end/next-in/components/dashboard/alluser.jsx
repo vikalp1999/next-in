@@ -40,19 +40,18 @@ var teamName = ""
 
 export default function AllUser({ children }) {
     const dispatch = useDispatch()
-    const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
+    const { isAuth, userData } = useSelector(store => store.auth);
     const { teamData } = useSelector(store => store.team);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()
 
-    if (!!teamData.chatroom) {
-        if (!!teamData.chatroom.members && LinkItems.length == 0) {
-            console.log("helo")
-            teamId = teamData.chatroom.roomLead._id;
+    if (!!teamData) {
+        if (!!teamData.members && LinkItems.length == 0) {
+            teamId = teamData.roomLead._id;
             role = userData.role;
-            code = teamData.chatroom._id
-            teamName = teamData.chatroom.name
-            LinkItems.push(...teamData.chatroom.members);
+            code = teamData._id
+            teamName = teamData.name
+            LinkItems.push(...teamData.members);
         }
     }
 
@@ -62,9 +61,9 @@ export default function AllUser({ children }) {
         if (!isAuth) {
             router.push("/auth")
         }
-        else {
-            dispatch(teamAction(userData.currentChatroom))
-        }
+        // else {
+        //     dispatch(teamAction(userData.currentChatroom))
+        // }
     }
     
     useEffect(() => {

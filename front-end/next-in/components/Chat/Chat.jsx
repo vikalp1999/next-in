@@ -34,7 +34,7 @@ const Chat = () => {
     socket.emit('newMsg', {
       msg:message,
       sender:auth.userData.user._id,
-      chat:team.teamData.chatroom?._id
+      chat:team.teamData?._id
     })
     setMessage("")
   };
@@ -47,7 +47,7 @@ const Chat = () => {
     setIsActive(!isActive);
   };
   
-  socket.emit('setup', team.teamData.chatroom?._id)
+  socket.emit('setup', team.teamData?._id)
   
   useEffect(()=>{
     socket.off("newMessage").on("newMessage", (msg)=>{
@@ -58,9 +58,9 @@ const Chat = () => {
   }, [])
 
   useEffect(()=>{
-    if(team.teamData.chatroom?.messages!=undefined){
-      arr = [...team.teamData.chatroom?.messages]
-      changeMsgs([...team.teamData.chatroom?.messages])
+    if(team.teamData?.messages!=undefined){
+      arr = [...team.teamData?.messages]
+      changeMsgs([...team.teamData?.messages])
     }
   }, [team.teamData])
   return (
@@ -121,7 +121,7 @@ const Chat = () => {
               size={{ base: "xs", lg: "sm", xl: "md" }}
               fontFamily="Poppins"
             >
-              {team.teamData.chatroom?.name}
+              {team.teamData?.name}
             </Heading>
             <Button
               onClick={handleClick}

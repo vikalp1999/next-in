@@ -31,7 +31,6 @@ import { deleteTaskAction, updateTaskAction } from "../../redux/user/user.action
 var role = "";
 var code = "";
 const Tasks = () => {
-    const dispatch = useDispatch()
 
     return (
         <Tabs isFitted variant="enclosed" position="absolute" top="0px" left="20vw" w={{ base: "100vw", md: "80vw", xl: "60vw" }} gap="30px" minH={"100vh"} m="20px auto">
@@ -82,14 +81,14 @@ const PersonalTasks = () => {
 
 const TaskContentProject = () => {
     const { teamData } = useSelector(store => store.team);
-    console.log("TeamData", teamData);
     const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
-    const taskData = userData?.role === "admin" ? teamData.chatroom?.alltasks : teamData.chatroom?.alltasks.filter((task)=>task.assignee._id === userData._id)
+    // console.log(teamData, userData)
+    const taskData = userData?.role === "admin" ? teamData?.alltasks : teamData?.alltasks.filter((task)=>task.assignee._id === userData._id)
 
-    if (!!userData && !!teamData.chatroom) {
-        if (!!userData.role && !!teamData.chatroom._id) {
+    if (!!userData && !!teamData) {
+        if (!!userData.role && !!teamData._id) {
             role = userData.role;
-            code = teamData.chatroom._id
+            code = teamData._id
         }
     }
 
