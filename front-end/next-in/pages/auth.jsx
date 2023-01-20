@@ -72,6 +72,7 @@ export default function Auth() {
             name: room
         })
         let data = await res.data;
+        console.log(data)
         if(data.error==false){
             dispatch(AddChatroom(data.chatroom))
             toast({

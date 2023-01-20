@@ -81,9 +81,9 @@ const PersonalTasks = () => {
 
 const TaskContentProject = () => {
     const { teamData } = useSelector(store => store.team);
-    const { isRegistered, isAuth, userData } = useSelector(store => store.auth);
-    // console.log(teamData, userData)
-    const taskData = userData?.role === "admin" ? teamData?.alltasks : teamData?.alltasks.filter((task)=>task.assignee._id === userData._id)
+    const { userData } = useSelector(store => store.auth);
+    const taskData = userData?.role === "admin" ? teamData?.alltasks : teamData?.alltasks?.filter((task)=>task.assignee._id === userData._id)
+
 
     if (!!userData && !!teamData) {
         if (!!userData.role && !!teamData._id) {
