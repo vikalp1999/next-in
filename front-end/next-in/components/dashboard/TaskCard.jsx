@@ -1,19 +1,24 @@
 import { Stack, Box, Avatar, Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from "@chakra-ui/react";
 import { BiStopwatch } from "react-icons/bi";
-import { FiEdit2 } from "react-icons/fi";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 import { IoMdDoneAll } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTaskAction, updateTaskAction } from "../../redux/user/user.action";
 import { Draggable } from 'react-beautiful-dnd'
+import { useState } from "react";
 
 let role = ''
+let code = ''
 export default function TaskCard({ data, status, index }) {
     const { userData } = useSelector(state=>state.auth)
+    const { teamData } = useSelector(state=>state.team)
+    const [isDragging, setIsDragging] = useState(false)
     const dispatch = useDispatch()
-    
+
     if(userData){
         role = userData.role
+        code = teamData._id
     }
 
     const deleteTask = (task) => {
@@ -26,7 +31,7 @@ export default function TaskCard({ data, status, index }) {
 
     const updateStatus = (id) => {
         if (confirm("Are You Sure") == true) {
-            dispatch(updateTaskAction(id, status, code))
+            dispatch(updateTaskAction(data.status, id, status, code))
         } else {
             return;
         }
@@ -39,7 +44,11 @@ export default function TaskCard({ data, status, index }) {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    bg="white" minW={{ base: "100%", lg: "100%", "2xl": "100%" }} minH="100px" p="10px">
+                    h='25%'
+                    bg="white" 
+                    // minW={{ base: "100%", lg: "100%", "2xl": "100%" }}
+                    minH="25%"
+                    p="10px">
                         <CardBody p="0px">
                             <Flex gap="10px" alignItems={"flex-start"} justifyContent="space-between">
                                 <Flex gap="10px">
@@ -50,7 +59,7 @@ export default function TaskCard({ data, status, index }) {
                                     </Box>
                                 </Flex>
                                 {
-                                    (role == "admin") ? <Box onClick={() => { deleteTask(data._id) }} borderRadius={"20px"} variant="ghost" p="0px"><Icon as={FiEdit2} color="blue" /></Box> : ""
+                                    (role == "admin") ? <Box onClick={() => { deleteTask(data._id) }} borderRadius={"20px"} variant="ghost" p="0px"><Icon as={MdDelete} color="blue" /></Box> : ""
                                 }
                             </Flex>
                         </CardBody>
