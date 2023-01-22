@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_CHATROOM, GET_USER_REQUEST } from "./user.types";
+import { ADD_CHATROOM, CHANGE_STAT_DRAG, GET_USER_REQUEST, ERROR, CHANGE_STAT } from "./user.types";
 
 let API = process.env.NEXT_PUBLIC_API_LINK;
 
@@ -33,13 +33,19 @@ export const deleteTaskAction = (task, chatroom) => async (dispatch) => {
     }
 };
 
-export const updateTaskAction = (id, changestatus,chatroom) => async (dispatch) => {
+export const updateTaskAction = (curr, id, changestatus) => async (dispatch) => {
+    dispatch({
+        type:CHANGE_STAT,
+        payload:{curr, id, changestatus}
+    })
     try {
         const res = await axios.post(`${API}/task/updatestatus/${id}`, {
             changestatus
         });
         const data = await res.data;
-        dispatch(teamAction(chatroom))
+        return dispatch({
+            type:ERROR
+        })
     } catch (error) {
         console.log(error.message)
     }

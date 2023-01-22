@@ -7,7 +7,7 @@ import {
     CloseButton,
     Flex,
     ModalFooter,
-    Icon,
+    Avatar,
     useColorModeValue,
     Link,
     Drawer,
@@ -131,7 +131,6 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
         const cred = { ...task, ...taskData.current }
         let res = await axios.post(`${API}/task/addtask`, cred)
         let data = await res.data;
-        console.log("final", data)
         onClose()
         dispatch(teamAction(code))
     }
@@ -239,21 +238,11 @@ const NavItem = ({ children, ...rest }) => {
                     bg: '#9AB7F5',
                     color: 'white',
                 }}
-                justifyContent={'space-around'}
+                justifyContent={'left'}
+                px='10px'
                 {...rest}>
-                    <Flex
-                    backgroundColor={new_color}
-                    borderRadius={'50%'}
-                    h='45px'
-                    w='45px'
-                    justifyContent={'center'}
-                    alignItems={'center'}
-                    >
-                        <Heading fontSize={'18px'} color={'white'}>
-                            {children[0]}
-                        </Heading>
-                    </Flex>
-                    <Heading w='75%' fontSize={'20px'}>{children}</Heading>
+                    <Avatar name={children} mr='15px' />
+                    <Text fontSize={'20px'}>{children}</Text>
             </Flex>
         </Link>
     );

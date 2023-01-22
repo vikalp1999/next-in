@@ -1,9 +1,11 @@
 import { Stack, Box, Avatar, Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from "@chakra-ui/react";
 import { BsPlusLg } from "react-icons/bs";
 import TaskCard from "./TaskCard";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StrictModeDroppable } from "../StrictModeDroppable";
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { useEffect, useState } from "react";
+import { updateTaskAction } from "../../redux/user/user.action";
 
 // const taskData = [{
 //     title:"Do Redux",
@@ -77,10 +79,12 @@ const PersonalTasks = () => {
 }
 
 const TaskContentProject = () => {
-    const { teamData } = useSelector(store => store.team);
+    const { team } = useSelector(store => store);
+    const { teamData, done, inprogress, todo } = useSelector(store => store.team);
     const { userData } = useSelector(store => store.auth);
+    const dispatch = useDispatch()
     const taskData = userData?.role === "admin" ? teamData?.alltasks : teamData?.alltasks?.filter((task)=>task.assignee._id === userData._id)
-
+    const [height, setHeight] = useState(0)
 
     if (!!userData && !!teamData) {
         if (!!userData.role && !!teamData._id) {
@@ -90,8 +94,13 @@ const TaskContentProject = () => {
     }
 
     const onDragEnd = (result) => {
-        console.log(result)
+        const { source:{droppableId, index}, destination } = result
+        dispatch(updateTaskAction(droppableId, team[droppableId][index]._id, destination.droppableId))
     }
+
+    useEffect(()=>{
+        setHeight(window.innerHeight-120)
+    }, [window.innerHeight])
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -101,11 +110,16 @@ const TaskContentProject = () => {
                 <StrictModeDroppable droppableId="todo">
                     {(provided)=>(
                         <Stack
-                        bg={'#F1948A'}
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        w="100%" minH="480px" p="15px" borderRadius={"10px"}>
-                            {taskData && taskData.map((task, i) => {
+                        overflowY={'auto'}
+                        w="100%" 
+                        height={height}
+                        gap='20px'
+                        bg={'#F1948A'}
+                        p="15px" 
+                        borderRadius={"10px"}>
+                            {todo.map((task, i) => {
                                 if (task.status === "todo") {
                                     return <TaskCard index={i} key={i} data={task} status="inprogress" />
                                             
@@ -123,8 +137,14 @@ const TaskContentProject = () => {
                         <Stack 
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        w="100%" minH="480px" p="15px" bg="#F9E79F" borderRadius={"10px"}>
-                            {taskData && taskData.map((task, i) => {
+                        overflowY={'auto'}
+                        w="100%" 
+                        height={height}
+                        gap='20px'
+                        bg="#F9E79F" 
+                        p="15px" 
+                        borderRadius={"10px"}>
+                            {inprogress.map((task, i) => {
                                 if (task.status === "inprogress") {
                                     return <TaskCard index={i} key={i} data={task} status="done" />
                                 }
@@ -141,8 +161,14 @@ const TaskContentProject = () => {
                         <Stack 
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        w="100%" gap="20px" bg="#82E0AA" minH="480px" p="15px" borderRadius={"10px"}>
-                            {taskData && taskData.map((task, i) => {
+                        overflowY={'auto'}
+                        w="100%" 
+                        height={height}
+                        gap="20px" 
+                        bg="#82E0AA"
+                        p="15px" 
+                        borderRadius={"10px"}>
+                            {done.map((task, i) => {
                                 if (task.status === "done") {
                                     return <TaskCard index={i} key={i} data={task} status="finish" />
                                 }
