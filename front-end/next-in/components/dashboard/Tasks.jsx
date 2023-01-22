@@ -1,11 +1,9 @@
-import { Avatar, Box, Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from "@chakra-ui/react";
-import { BiStopwatch } from "react-icons/bi";
-import { BsArrowRight, BsPlusLg } from "react-icons/bs";
-import { FiEdit2 } from "react-icons/fi";
-import { AiOutlineArrowRight } from "react-icons/ai";
-import { IoMdDoneAll } from "react-icons/io";
-import { useSelector, useDispatch } from 'react-redux';
-import { deleteTaskAction, updateTaskAction } from "../../redux/user/user.action";
+import { Stack, Box, Avatar, Button, ButtonGroup, Card, CardBody, CardFooter, Divider, Flex, Heading, Icon, Tab, TabList, TabPanel, TabPanels, Tabs, Text, VStack } from "@chakra-ui/react";
+import { BsPlusLg } from "react-icons/bs";
+import TaskCard from "./TaskCard";
+import { useSelector } from 'react-redux';
+import { StrictModeDroppable } from "../StrictModeDroppable";
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 // const taskData = [{
 //     title:"Do Redux",
@@ -31,7 +29,6 @@ import { deleteTaskAction, updateTaskAction } from "../../redux/user/user.action
 var role = "";
 var code = "";
 const Tasks = () => {
-
     return (
         <Tabs isFitted variant="enclosed" position="absolute" top="0px" left="20vw" w={{ base: "100vw", md: "80vw", xl: "60vw" }} gap="30px" minH={"100vh"} m="20px auto">
             <TabList w="100%" >
@@ -92,41 +89,71 @@ const TaskContentProject = () => {
         }
     }
 
+    const onDragEnd = (result) => {
+        console.log(result)
+    }
+
     return (
-        <>
-            <Flex className="taskContent" flexDirection={{ base: "column", lg: "row" }} w="100%" gap="10px">
-                <Flex flexDirection={"column"} gap="5px" w="100%">
-                    <Heading size="md" color={"#4F5E7B"} fontWeight="500">To Do</Heading>
-                    <VStack w="100%" minH="480px" p="15px" bg="#F7F7F7" borderRadius={"10px"}>
-                        {taskData && taskData.map((task, i) => {
-                            if (task.status === "todo") {
-                                return <TaskCard key={i} data={task} status="inprogress" />
-                            }
-                        })}
-                    </VStack>
-                </Flex>
-                <Flex flexDirection={"column"} gap="5px" w="100%">
-                    <Heading size="md" color={"#4F5E7B"} fontWeight="500">In Progress</Heading>
-                    <VStack w="100%" minH="480px" p="15px" bg="#F7F7F7" borderRadius={"10px"}>
-                        {taskData && taskData.map((task, i) => {
-                            if (task.status === "inprogress") {
-                                return <TaskCard key={i} data={task} status="done" />
-                            }
-                        })}
-                    </VStack>
-                </Flex>
-                <Flex flexDirection={"column"} gap="5px" w="100%" >
-                    <Heading size="md" color={"#4F5E7B"} fontWeight="500">Completed</Heading>
-                    <VStack w="100%" gap="20px" bg="#F7F7F7" minH="480px" p="15px" borderRadius={"10px"}>
-                        {taskData && taskData.map((task, i) => {
-                            if (task.status === "done") {
-                                return <TaskCard key={i} data={task} status="finish" />
-                            }
-                        })}
-                    </VStack>
-                </Flex>
+        <DragDropContext onDragEnd={onDragEnd}>
+        <Flex className="taskContent" flexDirection={{ base: "column", lg: "row" }} w="100%" gap="10px">
+            <Flex flexDirection={"column"} gap="5px" w="100%">
+                <Heading size="md" color={"#4F5E7B"} fontWeight="500">To Do</Heading>
+                <StrictModeDroppable droppableId="todo">
+                    {(provided)=>(
+                        <Stack
+                        bg={'#F1948A'}
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        w="100%" minH="480px" p="15px" borderRadius={"10px"}>
+                            {taskData && taskData.map((task, i) => {
+                                if (task.status === "todo") {
+                                    return <TaskCard index={i} key={i} data={task} status="inprogress" />
+                                            
+                                }
+                            })}
+                            {provided.placeholder}
+                        </Stack>
+                    )}
+                </StrictModeDroppable>
             </Flex>
-        </>
+            <Flex flexDirection={"column"} gap="5px" w="100%">
+                <Heading size="md" color={"#4F5E7B"} fontWeight="500">In Progress</Heading>
+                <StrictModeDroppable droppableId="inprogress">
+                    {(provided)=>(
+                        <Stack 
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        w="100%" minH="480px" p="15px" bg="#F9E79F" borderRadius={"10px"}>
+                            {taskData && taskData.map((task, i) => {
+                                if (task.status === "inprogress") {
+                                    return <TaskCard index={i} key={i} data={task} status="done" />
+                                }
+                            })}
+                            {provided.placeholder}
+                        </Stack>
+                    )}
+                </StrictModeDroppable>
+            </Flex>
+            <StrictModeDroppable droppableId="done">
+                {(provided)=>(
+                    <Flex flexDirection={"column"} gap="5px" w="100%" >
+                        <Heading size="md" color={"#4F5E7B"} fontWeight="500">Completed</Heading>
+                        <Stack 
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        w="100%" gap="20px" bg="#82E0AA" minH="480px" p="15px" borderRadius={"10px"}>
+                            {taskData && taskData.map((task, i) => {
+                                if (task.status === "done") {
+                                    return <TaskCard index={i} key={i} data={task} status="finish" />
+                                }
+                            })}
+                        {provided.placeholder}
+                        </Stack>
+                    </Flex>
+                    )}
+            </StrictModeDroppable>
+        </Flex>
+        </DragDropContext>
     )
 }
 
@@ -172,60 +199,6 @@ const TaskContentProject = () => {
 //     )
 // }
 
-const TaskCard = ({ data, status }) => {
-    const dispatch = useDispatch()
-    // console.log("role", role)
-    const deleteTask = (task) => {
-        // console.log(task)
-        // console.log(code)
-        if (confirm("Are You Sure") == true) {
-            dispatch(deleteTaskAction(task, code))
-        } else {
-            return;
-        }
-    }
-
-    const updateStatus = (id) => {
-        console.log(status)
-        if (confirm("Are You Sure") == true) {
-            dispatch(updateTaskAction(id, status, code))
-        } else {
-            return;
-        }
-    }
-
-    return (
-        <>
-            <Card bg="white" minW={{ base: "90%", lg: "90%", "2xl": "90%" }} minH="100px" p="10px">
-                <CardBody p="0px">
-                    <Flex gap="10px" alignItems={"flex-start"} justifyContent="space-between">
-                        <Flex gap="10px">
-                            <Avatar size="sm" name={data.assignee.name} />
-                            <Box dislay="flex" justifyContent={"flex-start"}>
-                                <Text fontWeight="600" fontSize="1em">{data.title}</Text>
-                                <Text>{data.assignee.name}</Text>
-                            </Box>
-                        </Flex>
-                        {
-                            (role == "admin") ? <Box onClick={() => { deleteTask(data._id) }} borderRadius={"20px"} variant="ghost" p="0px"><Icon as={FiEdit2} color="blue" /></Box> : ""
-                        }
-                    </Flex>
-                </CardBody>
-                <CardFooter p="5px" display="flex" justifyContent={"space-between"} alignItems="center">
-                    <Box display="flex" flexDirection={"row"} gap="3px">
-                        <Icon as={BiStopwatch} cursor="pointer" bg={"transparent"} w="20px" height="20px" color="red.600" />
-                        <Text fontSize={"0.8em"}>{data.deadline}</Text>
-                    </Box>
-                    {
-                        (status != "finish") ? <Button onClick={() => { updateStatus(data._id) }} bg="#29B3FE" colorScheme="#29B3FE" size="sm" >{data.status != "done" ? <Icon as={AiOutlineArrowRight} size={"12px"} color="white" /> : <Icon as={IoMdDoneAll} size={"12px"} color="white" />}</Button> : ""
-                    }
-                </CardFooter>
-            </Card>
-        </>
-    )
-
-
-}
 
 export default Tasks;
 

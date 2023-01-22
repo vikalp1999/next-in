@@ -3,7 +3,7 @@ import { FaFacebookF } from 'react-icons/fa';
 import { BsGoogle, BsLinkedin, BsTwitter } from 'react-icons/bs';
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser, registerUser } from '../redux/auth/auth.action';
+import { loginUser, registerUser, updateUser } from '../redux/auth/auth.action';
 import { useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router';
 import {
@@ -72,9 +72,9 @@ export default function Auth() {
             name: room
         })
         let data = await res.data;
-        console.log(data)
         if(data.error==false){
             dispatch(AddChatroom(data.chatroom))
+            dispatch(updateUser(data.user))
             toast({
                 title: 'Chatroom created successfully',
                 description: "We've created your chatroom for you.",

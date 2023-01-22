@@ -1,4 +1,4 @@
-import { AUTH_ERROR, AUTH_LOGIN_SUCCESS, AUTH_REGISTER_SUCCESS, AUTH_RESET } from "./auth.types";
+import { AUTH_ERROR, AUTH_LOGIN_SUCCESS, AUTH_REGISTER_SUCCESS, AUTH_RESET, UPDATE_USER } from "./auth.types";
 
 const initialState = {
     isRegistered: false,
@@ -45,6 +45,12 @@ export const authReducer = (state = initialState, { type, payload }) => {
                 isAuth: false,
                 isError: false,
                 ErrorMsg:''
+            };
+        }
+        case UPDATE_USER: {
+            return {
+                ...state,
+                userData:payload
             };
         }
         default: {
