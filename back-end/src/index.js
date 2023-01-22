@@ -10,6 +10,7 @@ const ChatroomRoute = require('./routes/chatroom.route')
 const { Server } = require('socket.io')
 const MessageModel = require("./model/message.model")
 const ChatroomModel = require('./model/chatRoom.model')
+const UserModel = require('./model/user.model')
 
 const app= express();
 const server = http.createServer(app)
@@ -42,11 +43,13 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket)=>{
-    socket.once('setup', (chatroom)=>{
-        socket.join(chatroom)
-        console.log(socket.id, "has joined", chatroom)
+    socket.once('setup', async (user)=>{
+        socket.join(user)
+        console.log(socket.id, 'connected')
+        socket.broadcast.emit('update')
+        let user1 = await UserModel.findOneAndUpdate({_id:user}, {online:true, socket:socket.id}, {new:true})
     })
-
+    
     socket.once("newMsg", async ({msg,sender,chat})=>{
         const newtest = new MessageModel({
             msg, 
@@ -62,6 +65,11 @@ io.on('connection', (socket)=>{
         })
         const getMsg = await MessageModel.findById(newtest._id).populate("sender") 
         socket.broadcast.emit("newMessage", getMsg)
-        console.log("New Message added")
+    })
+    
+    socket.once('disconnect', async (id)=>{
+        console.log(socket.id, 'disconnected')
+        socket.broadcast.emit('update')
+        let user = await UserModel.findOneAndUpdate({socket:socket.id}, {online:false, socket:''}, {new: true})
     })
 })
