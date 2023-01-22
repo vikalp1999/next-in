@@ -47,7 +47,6 @@ export default function AllUser({ children }) {
     const { teamData } = useSelector(store => store.team);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const router = useRouter()
-    console.log(teamData, userData)
 
     if (!!teamData) {
         if (!!teamData.members && LinkItems.length == 0) {

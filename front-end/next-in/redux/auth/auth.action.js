@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AUTH_ERROR, AUTH_LOGIN_SUCCESS, AUTH_REGISTER_SUCCESS, AUTH_RESET } from "./auth.types";
+import { AUTH_ERROR, AUTH_LOGIN_SUCCESS, AUTH_REGISTER_SUCCESS, AUTH_RESET, UPDATE_USER } from "./auth.types";
 
 let API = process.env.NEXT_PUBLIC_API_LINK;
 export const registerUser = (creds) => async (dispatch) => {
@@ -37,3 +37,9 @@ export const loginUser = (creds) => async (dispatch) => {
     }
 };
 
+export const updateUser = (user) => {
+    return {
+        type:UPDATE_USER,
+        payload:user
+    }
+}
