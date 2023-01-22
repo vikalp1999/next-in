@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 export default function ChatBubble({ data }) {
   const {auth} = useSelector(state=>state)
 
-  if(data.sender._id==auth.userData.user._id){
+  if(data.sender._id==auth.userData._id){
       return (
           <Flex className="SelfMsgContainer" alignItems="flex-end"  gap="10px">
           <Card

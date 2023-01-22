@@ -40,6 +40,14 @@ const userSchema= mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:"chatroom"
         }
+    },
+    online:{
+        type:Boolean,
+        default:false
+    },
+    socket:{
+        type:String,
+        default:''
     }
 })
 

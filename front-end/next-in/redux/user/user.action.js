@@ -4,6 +4,7 @@ import { ADD_CHATROOM, CHANGE_STAT_DRAG, GET_USER_REQUEST, ERROR, CHANGE_STAT } 
 let API = process.env.NEXT_PUBLIC_API_LINK;
 
 export const teamAction = (id) => async (dispatch) => {
+    console.log('triggered')
     try {
         const res = await axios.get(`${API}/chatroom/${id}`);
         const data = await res.data;

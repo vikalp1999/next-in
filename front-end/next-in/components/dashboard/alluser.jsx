@@ -23,7 +23,8 @@ import {
     ModalBody,
     FormControl,
     FormLabel,
-    Input
+    Input,
+    Spinner
 } from '@chakra-ui/react';
 import { Divider } from '@chakra-ui/react'
 import {
@@ -94,6 +95,7 @@ export default function AllUser({ children }) {
 const SidebarContent = ({ onClose: onClosed, ...rest }) => {
     const dispatch = useDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { teamData } = useSelector(store => store.team);
     const toast = useToast()
     const { isOpen:isOpen1, onOpen:onOpen1, onClose:onClose1 } = useDisclosure()
     const [task, setTask] = useState({
@@ -105,6 +107,7 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
         assignee: "",
         chatroom: ""
     });
+
 
     const handleTask = (assignee, chatroom) => {
         if (role == "admin") {
@@ -211,9 +214,9 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
                 overflowY={'auto'}
                 scrollBehavior={'smooth'}
                 >
-                {LinkItems.map((link) => (
+                {teamData.members.map((link) => (
                     <NavItem onClick={() => { handleTask(link._id, link.currentChatroom) }} key={link.name}>
-                        {link.name}
+                        {link}
                     </NavItem>
                 ))}
                 </Box>
@@ -223,12 +226,11 @@ const SidebarContent = ({ onClose: onClosed, ...rest }) => {
 };
 
 const NavItem = ({ children, ...rest }) => {
-    var colors = ['red', 'blue','green','cyan','orange', 'purple'];
-    var new_color = colors[Math.floor(Math.random()*colors.length)];
     return (
         <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
             <Flex
                 align="center"
+                alignItems={'center'}
                 p="2"
                 mr="4"
                 borderRadius="lg"
@@ -238,11 +240,27 @@ const NavItem = ({ children, ...rest }) => {
                     bg: '#9AB7F5',
                     color: 'white',
                 }}
-                justifyContent={'left'}
+                justifyContent={'space-between'}
                 px='10px'
                 {...rest}>
-                    <Avatar name={children} mr='15px' />
-                    <Text fontSize={'20px'}>{children}</Text>
+                    <Flex
+                    alignItems={'center'}
+                    >
+                        <Avatar name={children.name} mr='15px' />
+                        <Text fontSize={'20px'}>{children.name}</Text>
+                    </Flex>
+                    {children.online ? <Box 
+                    bg='green'
+                    w='10px'
+                    h='10px'
+                    borderRadius={'50%'}
+                    />
+                    :
+                    <Box border='1px solid gray' 
+                    w='10px'
+                    h='10px'
+                    borderRadius={'50%'}
+                    />}
             </Flex>
         </Link>
     );

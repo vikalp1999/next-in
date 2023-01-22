@@ -14,12 +14,14 @@ import { BiSmile } from "react-icons/bi";
 import { ImAttachment } from "react-icons/im";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { BsChatText } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import io from 'socket.io-client'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { teamAction } from "../../redux/user/user.action";
 
-const endpoint = 'https://next-in-back-end.onrender.com/'
+const endpoint = 'http://localhost:8080'
+// 'https://next-in-back-end.onrender.com/'
 let arr = []
 
 const Chat = () => {
@@ -27,13 +29,15 @@ const Chat = () => {
   const [isActive, setIsActive] = useState(false);
   const [message, setMessage] = useState("");
   const [msgs, changeMsgs] = useState(arr)
-  const {auth, team} = useSelector(state=>state)
+  const { auth, team } = useSelector(state=>state)
+  const dispatch = useDispatch()
+  const timer = useRef(null)
 
   
   const handleSend = () => {
     socket.emit('newMsg', {
       msg:message,
-      sender:auth.userData.user._id,
+      sender:auth.userData._id,
       chat:team.teamData?._id
     })
     setMessage("")
@@ -47,22 +51,36 @@ const Chat = () => {
     setIsActive(!isActive);
   };
   
-  socket.emit('setup', team.teamData?._id)
   
   useEffect(()=>{
-    socket.off("newMessage").on("newMessage", (msg)=>{
+    socket.on("newMessage", (msg)=>{
       let newArr = [...msgs]
       newArr.push(msg)
       changeMsgs([...newArr])
     })
+  
+    socket.on('update', ()=>{
+      if(timer.current!=null){
+        clearTimeout(timer.current)
+        timer.current = null
+      }
+      timer.current = setTimeout(()=>{
+        dispatch(teamAction(team.teamData._id))
+      }, 2500)
+    })
+  }, [socket])
+  
+  useEffect(()=>{
+    socket.emit('setup', auth.userData._id)
   }, [])
-
+  
   useEffect(()=>{
     if(team.teamData?.messages!=undefined){
       arr = [...team.teamData?.messages]
       changeMsgs([...team.teamData?.messages])
     }
   }, [team.teamData])
+
   return (
     <>
       <Button
